@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicken Hunter - Menú</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- <img  id="backG" src="granja.jpg" alt=""> -->
+    <audio id="chickenSound" src="cacareo.mp3"></audio>
+    <div class="menu-container">
+        <div class="menu_identity">
+        <h1>Chicken Hunter</h1>
+        <h6>SesionUsuario</h6>
+        </div>
+        <div id="botones">
+        <button class="menu-button" id="playButton" onclick="location.href='../escenario/escenario.html'"><i class="fa fa-play"></i>JUGAR</button><br>
+        <button onclick="location.href='Sesion.html'" class="menu-button" id="settingsButton">INICIAR SESION</button><br>
+        <button onclick="location.href='Score.html'" class="menu-button" id="settingsButton">PUNTUACIONES</button><br>
+        <button onclick="window.close();" class="menu-button" id="exitButton">SALIR</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
