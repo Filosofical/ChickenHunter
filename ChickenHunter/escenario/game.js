@@ -61,15 +61,18 @@ let actions = {};
 let currentAction = null;
 let isMoving = false;
 let isRunning = false;
+let isCatching = false;
+let isDefeated = false;
+let isVictorious = false;
 const clock = new THREE.Clock();
 
 // Jugador
 const loader = new THREE.GLTFLoader();
 let player;
 
-loader.load('../escenario/models/dog.glb', (gltf) => {
+loader.load('../escenario/models/granjero.glb', (gltf) => {
     player = gltf.scene;
-    player.scale.set(0.2, 0.2, 0.2);
+    player.scale.set(2, 2, 2);
     player.position.set(0, 1, 0);
     scene.add(player);
     
@@ -81,9 +84,12 @@ loader.load('../escenario/models/dog.glb', (gltf) => {
     
     // Animaciones básicas
     actions = {
-        idle: mixer.clipAction(findAnimation(animations, "Idle1")),
-        walk: mixer.clipAction(findAnimation(animations, "WalkCycle")),
-        run: mixer.clipAction(findAnimation(animations, "RunCycle"))
+        idle: mixer.clipAction(findAnimation(animations, "Idle")),
+        walk: mixer.clipAction(findAnimation(animations, "Walk")),
+        run: mixer.clipAction(findAnimation(animations, "Run")),
+        victory: mixer.clipAction(findAnimation(animations, "Victory")),
+        defeat: mixer.clipAction(findAnimation(animations, "Defeat")),
+        catch: mixer.clipAction(findAnimation(animations, "Catch"))
     };
     
     // Configurar las acciones
@@ -119,7 +125,9 @@ function updateAnimation() {
     
     // Si la animación ya está reproduciéndose, no hacer nada
     if (newAction === currentAction) return;
-    
+    if (isCatching) {
+        newAction = actions.catch;
+    }
     // Configurar transición entre animaciones
     currentAction.fadeOut(0.2);
     newAction.reset().fadeIn(0.2).play();
@@ -282,6 +290,10 @@ function animate() {
                 // Detección de colisión con el jugador
                 if (player && chicken.position.distanceTo(player.position) < 1) {
                     // Gallina atrapada
+                    isCatching = true;
+                    setTimeout(() => {
+                        isCatching = false;
+                    }, 1000); // Duración de la animación de atrapar
                     chicken.position.set(Math.random() * 40 - 20, 0.5, Math.random() * 40 - 20);
                     caughtChickens++;
                     counterElement.textContent = `Gallinas atrapadas: ${caughtChickens}`;
