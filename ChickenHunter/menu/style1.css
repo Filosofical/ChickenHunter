@@ -70,6 +70,18 @@ justify-content: center;
     gap: 8px;
     position: absolute;
 }
+.IS div-post {
+    border-radius: 16px;  /* Más cuadrado */
+    background: linear-gradient(45deg, #5f4b5a, #503f4c);
+    box-shadow: 7px -7px 20px #650122, -7px 7px 20px #c20242;
+    padding: 60px;
+    width: 400px; 
+    display: flex;
+    flex-direction: column;
+justify-content: center;
+    gap: 8px;
+    position: absolute;
+}
 .IS form h2{
     color: white;
     justify-content: center;
@@ -132,6 +144,7 @@ button {
     box-shadow: rgb(201, 46, 70) 0px 10px 0px 0px;
     color: hsl(0, 0%, 100%);
     cursor: pointer;
+    margin: 1px;
   }
   
   button:hover {
@@ -146,3 +159,9 @@ button {
     transition: 200ms;
   }
   
+.post{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

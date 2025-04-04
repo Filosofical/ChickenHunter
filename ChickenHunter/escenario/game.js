@@ -71,47 +71,47 @@ const loader = new THREE.GLTFLoader();
 let player;
 const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero';
 
-// if (selectedCharacter === 'Granjero') {
+ if (selectedCharacter === 'Granjero') {
   
-// loader.load('../escenario/models/granjero.glb', (gltf) => {
-//     player = gltf.scene;
-//     player.scale.set(2, 2, 2);
-//     player.position.set(0, 1, 0);
-//     scene.add(player);
+ loader.load('../escenario/models/granjero.glb', (gltf) => {
+     player = gltf.scene;
+     player.scale.set(2, 2, 2);
+     player.position.set(0, 1, 0);
+     scene.add(player);
     
-//     // Mezclador de animaciones
-//     mixer = new THREE.AnimationMixer(player);
+     // Mezclador de animaciones
+     mixer = new THREE.AnimationMixer(player);
     
-//     // Se obtienen todas las animaciones del modelo
-//     const animations = gltf.animations;
+     // Se obtienen todas las animaciones del modelo
+     const animations = gltf.animations;
     
-//     // Animaciones básicas
-//     actions = {
-//         idle: mixer.clipAction(findAnimation(animations, "Idle")),
-//         walk: mixer.clipAction(findAnimation(animations, "Walk")),
-//         run: mixer.clipAction(findAnimation(animations, "Run")),
-//         victory: mixer.clipAction(findAnimation(animations, "Victory")),
-//         defeat: mixer.clipAction(findAnimation(animations, "Defeat")),
-//         catch: mixer.clipAction(findAnimation(animations, "Catch"))
-//     };
+     // Animaciones básicas
+     actions = {
+         idle: mixer.clipAction(findAnimation(animations, "Idle")),
+         walk: mixer.clipAction(findAnimation(animations, "Walk")),
+         run: mixer.clipAction(findAnimation(animations, "Run")),
+         victory: mixer.clipAction(findAnimation(animations, "Victory")),
+         defeat: mixer.clipAction(findAnimation(animations, "Defeat")),
+         catch: mixer.clipAction(findAnimation(animations, "Catch"))
+     };
     
-//     // Configurar las acciones
-//     Object.values(actions).forEach(action => {
-//         action.enabled = true;
-//         action.setEffectiveTimeScale(1);
-//         action.setEffectiveWeight(1);
-//     });
+     // Configurar las acciones
+     Object.values(actions).forEach(action => {
+         action.enabled = true;
+         action.setEffectiveTimeScale(1);
+         action.setEffectiveWeight(1);
+     });
     
-//     // Iniciar con animación Idle1
-//     currentAction = actions.idle;
-//     currentAction.play();
+     // Iniciar con animación Idle1
+     currentAction = actions.idle;
+     currentAction.play();
     
-//     console.log('Modelo y animaciones cargados exitosamente');
-// }, undefined, (error) => {
-//     console.error("Error al cargar el modelo:", error);
-// });
+     console.log('Modelo y animaciones cargados exitosamente');
+ }, undefined, (error) => {
+     console.error("Error al cargar el modelo:", error);
+ });
 
-// } else if (selectedCharacter === 'Perro') {
+ } else if (selectedCharacter === 'Perro') {
     loader.load('../escenario/models/dog.glb', (gltf) => {
         player = gltf.scene;
         player.scale.set(.2, .2, .2);
@@ -148,7 +148,7 @@ const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero
     }, undefined, (error) => {
         console.error("Error al cargar el modelo:", error);
     });
-//}
+}
 
 
 // Función auxiliar para encontrar animaciones por nombre
@@ -178,7 +178,7 @@ function updateAnimation() {
 // Gallina
 let chicken;
 const chickens = [];
-const chickenSpeed = 0.01;
+const chickenSpeed = 1.0;
 const chickenCount = 5;
 
 for (let i = 0; i < chickenCount; i++) {

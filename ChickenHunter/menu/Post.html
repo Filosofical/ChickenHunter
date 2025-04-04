@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicaciones</title>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="contenedorPrin">
+        <header> 
+            <h1>Chicken Hunter</h1>
+        </header>
+
+    <main>
+        <div class="IS">
+            <!-- Publicar en Facebook -->
+            <div-post class="post">
+            <h3>¡PUBLICAR EN CHICKEN HUNTER!</h3>
+            <textarea id="postMessage" rows="3" cols="40" placeholder="Escribe tu mensaje..."></textarea><br>
+            <button onclick="publicarEnFacebook()">Publicar</button><br>
+            <button onclick="location.href='Feed.html'" class="menu-button">Ver posts</button><br>
+            <button onclick="location.href='index.html'" class="menu-button">Volver</button><br>
+            </div-post>
+        </div>
+    </main>
+
+        <footer>
+            <p>©Chicken Hunter - Todos los Derechos Reservados</p>
+        </footer>
+    </div>
+
+    <script src="API.js"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</body>
+</html>
