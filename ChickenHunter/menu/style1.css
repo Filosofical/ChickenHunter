@@ -74,7 +74,7 @@ justify-content: center;
     border-radius: 16px;  /* Más cuadrado */
     background: linear-gradient(45deg, #5f4b5a, #503f4c);
     box-shadow: 7px -7px 20px #650122, -7px 7px 20px #c20242;
-    padding: 60px;
+    padding: 20px;
     width: 400px; 
     display: flex;
     flex-direction: column;
