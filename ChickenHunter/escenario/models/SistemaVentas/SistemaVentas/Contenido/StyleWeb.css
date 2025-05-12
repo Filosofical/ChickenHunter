@@ -1,0 +1,298 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color:white;
+    color: #262628;
+    line-height: 5;
+}
+
+/* Encabezado */
+header {
+    background-color: #262628;
+    color: #C6C2F2;
+    padding: 20px;
+    text-align: center;
+}
+
+/*Barra de navegacion*/
+.navbar {
+    background-color: #D86072;
+    height: 80px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content:space-evenly;
+    height: 100%;
+
+}
+
+.navbar a {
+    color: #C6C2F2;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: #D6DC82;
+}
+
+
+.button {
+    display: inline-block;
+    padding: 0px  10px; 
+    background-color: #D6DC82;
+    color: #D86072;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover {
+    background-color: #FFF6EE;
+    border: none;
+    border-radius: 12px;
+    color: #D86072;
+    text-align: center;
+    padding: 0px  10px;
+}
+
+.button button2 {
+    display: inline-block;
+    padding: 30px  30px; 
+    background-color: #D6DC82;
+    color: #D86072;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover button2 {
+    background-color: #D86072;
+    border: none;
+    border-radius: 12px;
+    color: #C6C2F2;
+    text-align: center;
+    padding: 0px  10px;
+}
+input {  
+    background-color: #C6C2F2;
+    color: #262628;
+    padding: 12px 100px;
+    border: none;   
+    border-radius: 12px;
+    border-color: #262628;
+    box-sizing: border-box;
+}
+
+input:focus {
+    background-color: #FFF6EE;
+    border: none;
+}
+/*Diseño de cartas 1 (Inicio)*/
+.card {
+    background-color: #C6C2F2;
+    color: #262628;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 50px 50px;
+    box-shadow: 0 4px 8px #262628;
+    border: 1px solid #D86072;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: scale(1.05); /* Aumenta el tamaño de la card al hacer hover */
+    box-shadow: 0 8px 16px #262628; /* Cambia la sombra al hacer hover */
+}
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.card:hover .card-img {
+    transform: scale(1.1);
+}
+.card-content {
+    padding: 16px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.card:hover .card-content {
+    transform: translateY(-10px); /* Desplaza el contenido ligeramente hacia arriba */
+    opacity: 0.9; /* Reduce un poco la opacidad */
+}
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.card-text {
+    font-size: 14px;
+    color: #262628;
+    line-height: 1.5;
+ }
+
+  
+.card-button:hover {
+    background-color: #D6DC82;
+}
+    
+  
+/* diseño de cartas 2 (Listas) */
+.card card2{
+    width: 18rem; 
+    border: 1px solid #FFF6EE;
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px #262628; 
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    background-color: #C6C2F2; 
+  }
+  
+  .card:hover card2 {
+    transform: translateY(-10px); 
+    box-shadow: 0 8px 16px #262628;
+  }
+  
+  /* Estilo del cuerpo de la card */
+  .card-body card2x{
+    padding: 16px;
+    text-align: center;
+  }
+  
+  /* Título de la card */
+  .card-title card2 {
+    font-size: 1.5rem;
+    font-weight: bold; 
+    margin-bottom: 10px;
+    color: #262628; 
+  }
+  
+  /* Lista de items dentro de la card */
+  .list-group {
+    list-style-type: none; 
+    padding: 0; 
+    margin: 0; 
+  }
+  
+  /* Items de la lista */
+  .list-group-item {
+    padding: 10px 15px; 
+    border-bottom: 1px solid #FFF6EE; 
+    background-color: #C6C2F2;
+    color: #262628; 
+  }
+  
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Hover sobre items de la lista */
+  .list-group-item:hover {
+    background-color: #FFF6EE; 
+    color: #D6DC82; 
+    cursor: pointer;
+  }
+  
+  /*Imagen de Perfil*/
+  
+  /*Chat*/
+  .chat-container {
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    background-color: #fff;
+    border: 2px solid #D86072;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Área donde aparecen los mensajes */
+.chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #FFF6EE; /* Color Cream */
+    border-bottom: 2px solid #D86072;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.chat-message.user {
+    background-color: #C6C2F2; /* Color Lavender */
+    align-self: flex-end;
+    color: #262628;
+}
+
+.chat-message.bot {
+    background-color: #D6DC82; /* Color Lime */
+    align-self: flex-start;
+    color: #262628;
+}
+
+/* Estilo para la parte inferior (formulario) */
+.chat-input {
+    display: flex;
+    border-top: 2px solid #D86072;
+    background-color: #fff;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 0;
+    font-size: 1rem;
+    color: #262628;
+}
+
+.chat-input input:focus {
+    outline: none;
+}
+
+.chat-input button {
+    background-color: #D86072; /* Color Cherry */
+    color: #FFF6EE; /* Texto Cream */
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #C6C2F2; /* Hover Lavender */
+}
+
+/* Barra de desplazamiento personalizada */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: #D86072;
+    border-radius: 5px;
+}

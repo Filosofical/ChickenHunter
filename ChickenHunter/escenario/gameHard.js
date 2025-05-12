@@ -19,7 +19,7 @@ function resumeGame() {
 }
 
 function quitGame() {
-    window.location.href = '../menu/index.html';
+    window.location.href = '../menu/index.php';
 }
 
 // Cámara

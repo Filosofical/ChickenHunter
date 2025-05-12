@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background: url(carrito.jpg);
+    color: black;
+    line-height: 5;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+}
+
+/* Encabezado */
+header {
+    background-color: black;
+    color: antiquewhite;
+    padding: 20px;
+    text-align: center;
+}
+
+/*Barra de navegacion*/
+.navbar {
+    background-color: black;
+    height: 80px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content:space-evenly;
+    height: 80%;
+
+}
+
+.navbar a {
+    color: antiquewhite;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: white;
+}
+
+
+.button {
+    display: inline-block;
+    padding: 5px  10px; 
+    background-color: black;
+    color: antiquewhite;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover {
+    background-color: antiquewhite;
+    border: none;
+    border-radius: 12px;
+    color: black;
+    text-align: center;
+    padding: 5px  10px;
+}
+
+.button button2 {
+    display: inline-block;
+    padding: 30px  30px; 
+    background-color: #D6DC82;
+    color: #D86072;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover button2 {
+    background-color: #D86072;
+    border: none;
+    border-radius: 12px;
+    color: #C6C2F2;
+    text-align: center;
+    padding: 0px  10px;
+}
+input {  
+    background-color: antiquewhite;
+    color: black;
+    padding: 12px 100px;
+    border: none;   
+    border-radius: 12px;
+    border-color: black;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+input:focus {
+    background-color: white;
+    border: none;
+}
+
+/* Estilo de la tabla */
+#tablaCarrito {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#tablaCarrito thead {
+    background-color: #007bff;
+    color: #fff;
+    text-align: left;
+}
+
+#tablaCarrito th, #tablaCarrito td {
+    padding: 12px 15px;
+    border-bottom: 1px solid white;
+}
+
+#tablaCarrito tr:last-child td {
+    border-bottom: none;
+}
+
+#tablaCarrito tr:hover {
+    background-color: grey;
+}
+
+/* Estilo del total */
+tfoot {
+    font-weight: bold;
+    background-color: white;
+}
+
+tfoot td {
+    border-top: 2px solid #007bff;
+}
+
+/* Estilo de los botones */
+button {
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button[onclick^="eliminarDelCarrito"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+button[onclick^="realizarCompra"] {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    background-color: #28a745;
+    color: white;
+}
+
+button[onclick^="realizarCompra"]:hover {
+    background-color: #218838;
+}
+
+/* Input para cantidad */
+input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+
+/* Adaptabilidad */
+@media (max-width: 768px) {
+    #tablaCarrito {
+        font-size: 0.9em;
+    }
+
+    button {
+        font-size: 0.8em;
+    }
+}

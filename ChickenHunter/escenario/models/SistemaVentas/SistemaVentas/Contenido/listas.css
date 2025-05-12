@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background: url(listas.jpg);
+    color: black;
+    line-height: 5;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Encabezado */
+header {
+    background-color: black;
+    color: antiquewhite;
+    padding: 20px;
+    text-align: center;
+}
+
+/*Barra de navegacion*/
+.navbar {
+    background-color: black;
+    height: 80px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content:space-evenly;
+    height: 80%;
+
+}
+
+.navbar a {
+    color: antiquewhite;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: white;
+}
+
+
+.button {
+    display: inline-block;
+    padding: 5px  10px; 
+    background-color: black;
+    color: antiquewhite;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover {
+    background-color: antiquewhite;
+    border: none;
+    border-radius: 12px;
+    color: black;
+    text-align: center;
+    padding: 5px  10px;
+}
+
+.button button2 {
+    display: inline-block;
+    padding: 30px  30px; 
+    background-color: #D6DC82;
+    color: #D86072;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover button2 {
+    background-color: #D86072;
+    border: none;
+    border-radius: 12px;
+    color: #C6C2F2;
+    text-align: center;
+    padding: 0px  10px;
+}
+input {  
+    background-color: antiquewhite;
+    color: black;
+    padding: 12px 100px;
+    border: none;   
+    border-radius: 12px;
+    border-color: black;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+input:focus {
+    background-color: white;
+    border: none;
+}
+
+/* Contenedor principal de las listas */
+.crear-lista, 
+.listas, 
+.agregar-producto {
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente */
+    border-radius: 12px; /* Esquinas redondeadas */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    margin: 20px auto; /* Separación entre contenedores */
+    padding: 20px; /* Espaciado interno */
+    max-width: 800px; /* Ancho máximo */
+    width: 90%; /* Responsivo */
+    text-align: center; /* Centrado del texto */
+}
+
+/* Títulos dentro de los contenedores */
+.crear-lista h2, 
+.listas h2, 
+.agregar-producto h2 {
+    color: black;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+/* Formularios en los contenedores */
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+form input, 
+form textarea, 
+form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: antiquewhite;
+}
+
+form button {
+    background-color: black;
+    color: antiquewhite;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+form button:hover {
+    background-color: antiquewhite;
+    color: black;
+}
+
+/* Estilos para las listas de productos */
+.listas .lista {
+    border: 1px solid black; /* Borde más destacado */
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: antiquewhite; /* Fondo claro */
+    text-align: left;
+}
+
+.listas .lista h3 {
+    font-size: 20px;
+    color: #D86072;
+    margin-bottom: 10px;
+}
+
+.listas .lista p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.listas .lista ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.listas .lista ul li {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listas .lista ul li strong {
+    color: black;
+}
+
+.listas .lista ul li a {
+    text-decoration: none;
+    color: #D86072;
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid #D86072;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.listas .lista ul li a:hover {
+    background-color: #D86072;
+    color: white;
+}
+
+/* Botón dentro de la lista */
+.listas .lista a {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: antiquewhite;
+    background-color: black;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+
+.listas .lista a:hover {
+    background-color: antiquewhite;
+    color: black;
+}

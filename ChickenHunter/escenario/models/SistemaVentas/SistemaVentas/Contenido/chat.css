@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background: url(chat.jpg);
+    color: black;
+    line-height: 5;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+}
+
+/* Encabezado */
+header {
+    background-color: black;
+    color: antiquewhite;
+    padding: 20px;
+    text-align: center;
+}
+
+/*Barra de navegacion*/
+.navbar {
+    background-color: black;
+    height: 80px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content:space-evenly;
+    height: 80%;
+
+}
+
+.navbar a {
+    color: antiquewhite;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: white;
+}
+
+
+.button {
+    display: inline-block;
+    padding: 5px  10px; 
+    background-color: black;
+    color: antiquewhite;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover {
+    background-color: antiquewhite;
+    border: none;
+    border-radius: 12px;
+    color: black;
+    text-align: center;
+    padding: 5px  10px;
+}
+
+.button button2 {
+    display: inline-block;
+    padding: 30px  30px; 
+    background-color: #D6DC82;
+    color: #D86072;
+    border-radius: 12px; 
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    white-space: nowrap; 
+    transition: background-color 0.3s ease; 
+  }
+.button:hover button2 {
+    background-color: #D86072;
+    border: none;
+    border-radius: 12px;
+    color: #C6C2F2;
+    text-align: center;
+    padding: 0px  10px;
+}
+input {  
+    background-color: antiquewhite;
+    color: black;
+    padding: 12px 100px;
+    border: none;   
+    border-radius: 12px;
+    border-color: black;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+input:focus {
+    background-color: white;
+    border: none;
+}
+
+  /*Chat*/
+  .chat-container {
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    background-color: antiquewhite;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px black;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Área donde aparecen los mensajes */
+.chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: antiquewhite; /* Color Cream */
+    border-bottom: 2px solid black;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.chat-message.user {
+    background-color: #C6C2F2; /* Color Lavender */
+    align-self: flex-end;
+    color: #262628;
+}
+
+.chat-message.bot {
+    background-color: #D6DC82; /* Color Lime */
+    align-self: flex-start;
+    color: #262628;
+}
+
+/* Estilo para la parte inferior (formulario) */
+.chat-input {
+    display: flex;
+    border-top: 2px solid black;
+    background-color: #fff;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 0;
+    font-size: 1rem;
+    color: black;
+}
+
+.chat-input input:focus {
+    outline: none;
+}
+
+.chat-input button {
+    background-color: black; /* Color Cherry */
+    color: #FFF6EE; /* Texto Cream */
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #C6C2F2; /* Hover Lavender */
+}
+
+/* Barra de desplazamiento personalizada */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: black;
+    border-radius: 5px;
+}
+
+
