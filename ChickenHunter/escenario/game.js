@@ -196,13 +196,13 @@ for (let i = 0; i < chickenCount; i++) {
 }
 
 // Palo 
-let pitchfork;
+let beartrap;
 
-loader.load('../escenario/models/pichfork.glb', (gltf) => {
-    pitchfork = gltf.scene;
-    pitchfork.scale.set(2.0, 2.0, 2.0); 
-    pitchfork.position.set(0, 2, 0); 
-    scene.add(pitchfork);
+loader.load('../escenario/models/trap.glb', (gltf) => {
+    beartrap = gltf.scene;
+    beartrap.scale.set(1.0, 1.0, 1.0); 
+    beartrap.position.set(0, 0, 0); 
+    scene.add(beartrap);
     console.log('Modelo cargado exitosamente');
 }, undefined, (error) => {
     console.error("Error al cargar el modelo:", error);
