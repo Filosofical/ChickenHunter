@@ -1,9 +1,15 @@
 <?php
 require'../Back/DB_conn.php';
 session_start();
-
-$userId=$_SESSION['user_id'];
+if(isset($_SESSION['user_id'])){
+ $userId=$_SESSION['user_id'];
 $userName=$_SESSION['user_name'];
+}
+else{
+  $userId=null;
+  $userName=null;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
