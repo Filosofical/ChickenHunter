@@ -13,8 +13,9 @@ header{
                  20px -20px 40px #c20242;
                  display: flex;
     flex-direction: row;
-    justify-content:center;
+    justify-content:space-between;
     align-items: center;
+    padding: 0 20px;
 }
 header h1{
 margin-left: 10px;
@@ -166,4 +167,191 @@ button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.score .facil,
+.score .medio,
+.score .dificil {
+    display: none; /* Ocultos por JS inicialmente, excepto el seleccionado */
+    animation: fadeInEffect 0.5s ease-in-out; /* Animación suave al aparecer */
+}
+
+@keyframes fadeInEffect {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.score h2 {
+    font-family: 'Sigmar', cursive;
+    color: #ffffff; /* Blanco brillante para el título */
+    text-align: center;
+    font-size: 2em; /* Tamaño del título de sección */
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(231, 76, 60, 0.3); /* Sombra rosa/fucsia sutil */
+}
+
+.score table {
+    width: 100%;
+    border-collapse: collapse; /* Une los bordes de las celdas */
+    margin-bottom: 30px;
+    font-size: 0.9em;
+}
+
+.score th,
+.score td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #444; /* Línea divisoria sutil entre filas */
+}
+
+.score th {
+    font-family: 'Sigmar', cursive; /* Aplicar Sigmar a los encabezados de tabla también */
+    background-color: #333; /* Fondo ligeramente diferente para encabezados */
+    color: #e74c3c; /* Color fucsia/rosa para los encabezados de tabla */
+    font-size: 1em;
+    font-weight: normal; /* Sigmar ya es gruesa */
+}
+
+.score td {
+    color: #f0f0f0; /* Un blanco ligeramente menos brillante para los datos */
+}
+
+/* Estilo para la primera celda (Ranking) para centrarla si quieres */
+.score td:first-child,
+.score th:first-child {
+    text-align: center;
+    width: 80px; /* Ancho fijo para ranking */
+}
+
+
+/* Estilo para el mensaje "No hay puntuaciones" */
+.score tbody tr td[colspan="3"] {
+    text-align: center;
+    font-style: italic;
+    color: #999;
+    padding: 20px;
+}
+.score {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #2a2a2a; /* Un fondo ligeramente más claro para el contenedor de puntuaciones */
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 100%;
+   
+    gap: 20px;
+    height: 100%;
+  
+}
+
+.radio-inputs {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #eee;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  width: 300px;
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0;
+  color: rgba(51, 65, 85, 1);
+  transition: all 0.15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+}
+
+/* Hover effect */
+.radio-inputs .radio:hover .name {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Animation */
+.radio-inputs .radio input:checked + .name {
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  animation: select 0.3s ease;
+}
+
+@keyframes select {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Particles */
+.radio-inputs .radio input:checked + .name::before,
+.radio-inputs .radio input:checked + .name::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #3b82f6;
+  opacity: 0;
+  animation: particles 0.5s ease forwards;
+}
+
+.radio-inputs .radio input:checked + .name::before {
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.radio-inputs .radio input:checked + .name::after {
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes particles {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(var(--direction));
+  }
+}
+
+.radio-inputs .radio input:checked + .name::before {
+  --direction: -10px;
+}
+
+.radio-inputs .radio input:checked + .name::after {
+  --direction: 10px;
 }

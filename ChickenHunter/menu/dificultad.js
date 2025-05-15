@@ -12,17 +12,17 @@ document.getElementById('jugarBtn').addEventListener('click', function() {
         switch (dificultadSeleccionada) {
             case '1':
                 // Asegúrate que esta ruta y nombre de archivo sean correctos
-                targetUrl = '../escenario/escenario.html';
+                targetUrl = '../escenario/escenario.php';
                 dificultadNumero = 1;
                 break;
             case '2':
                 // Usando el nombre que mencionaste, verifica que sea exacto
-                targetUrl = '../escenario/escenarioMid.html';
+                targetUrl = '../escenario/escenarioMid.php';
                 dificultadNumero = 2;
                 break;
             case '3': 
                  // Asegúrate que esta ruta y nombre de archivo sean correctos
-                targetUrl = '../escenario/EsceneHard.html';
+                targetUrl = '../escenario/EsceneHard.php';
                 dificultadNumero = 3;
                 break;
             default:

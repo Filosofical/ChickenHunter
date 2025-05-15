@@ -72,13 +72,28 @@ $conn->close();
     <div class="contenedorPrin">
         <header>
             <h1>Chicken Hunter</h1>
-            <h6><?php echo htmlspecialchars($userName); ?></h6>
+            <h4><?php echo htmlspecialchars($userName); ?></h4>
 
         </header>
 
         <main>
-           <div class="IS">
+              <div class="score">
+        <div class="radio-inputs">
+            <label class="radio">
+                <input type="radio" name="radio" id="radioFacil" value="facil" checked />
+                <span class="name">Facil</span>
+            </label>
+            <label class="radio">
+                <input type="radio" name="radio" id="radioMedio" value="medio" />
+                <span class="name">Medio</span>
+            </label>
+            <label class="radio">
+                <input type="radio" name="radio" id="radioDificil" value="dificil" />
+                <span class="name">Dificil</span>
+            </label>
+        </div>
 
+<div class="facil">
         <h2>PUNTUACIONES Fácil</h2>
         <table>
             <thead>
@@ -99,7 +114,9 @@ $conn->close();
                 <?php endif; ?>
             </tbody>
         </table>
+</div>
 
+        <div class="medio">
         <h2>PUNTUACIONES Medio</h2>
         <table>
             <thead>
@@ -123,7 +140,8 @@ $conn->close();
                 <?php endif; ?>
             </tbody>
         </table>
-
+        </div>
+        <div class="dificil">
         <h2>PUNTUACIONES Difícil</h2>
         <table>
             <thead>
@@ -147,6 +165,7 @@ $conn->close();
                 <?php endif; ?>
             </tbody>
         </table>
+        </div>
 
         <button class="menu-button" id="playButton" onclick="location.href='../menu/index.php'">Volver</button>
         </div> 
@@ -157,5 +176,6 @@ $conn->close();
             <p>Daniel Flores Santacruz</p>
         </footer>
     </div>
+    <script src="puntaje.js"></script>
 </body>
 </html>
