@@ -464,7 +464,7 @@ for (let i = 0; i < chickenCount; i++) {
 
 // Trampa de Oso
 const bearTraps = []; // Array para almacenar todas las trampas
-const numTraps = 10; // Define cuántas trampas quieres modificar en cada diff
+const numTraps = 30; // Define cuántas trampas quieres modificar en cada diff
 const trapDamageTime = 20;
 
 
@@ -706,7 +706,7 @@ function animate() {
 
                 // Detección de colisión con el jugador para atraparla (sin cambios en esta parte)
                 if (!isCatching && chicken.position.distanceTo(player.position) < 1.5) {
-                     if (actions.catch && selectedCharacter === 'Granjero') {
+                     if (actions.catch && selectedCharacter === 'Perro') {
                         isCatching = true;
                         updateAnimationState();
                     } else {
@@ -723,7 +723,7 @@ function animate() {
             caughtChickens++;
             counterElement.textContent = `Gallinas atrapadas: ${caughtChickens}`;
         
-            if (!isCatching && selectedCharacter === 'Granjero' && actions.catch) {
+            if (!isCatching && selectedCharacter === 'Perro' && actions.catch) {
                 // Si no se estaba ya en la animación de atrapar (porque fue un catch instantáneo para el perro por ejemplo)
                 // y el granjero tiene animación de catch, se podría forzar un pequeño gesto o sonido.
                 // Pero como la lógica de `isCatching` ya maneja la animación, esta parte podría ser redundante
@@ -743,7 +743,7 @@ function animate() {
         }
 
         // Si isCatching es true y la animación es la de atrapar y el personaje es Granjero
-        if (isCatching && currentAction === actions.catch && selectedCharacter === 'Granjero') {
+        if (isCatching && currentAction === actions.catch && selectedCharacter === 'Perro') {
             // Hacemos la lógica de "atrapar" (mover gallina, contar) cuando la animación está a punto de terminar
             // o en un punto clave. Para simplificar, podrías atarlo al evento 'finished'
             // o si la animación "Catch" ya implica visualmente el atrape, puedes hacer la lógica

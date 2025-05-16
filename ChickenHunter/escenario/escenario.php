@@ -31,7 +31,7 @@ $user_name= isset($_SESSION['user_name']) ? $_SESSION['user_name'] : null;
         <p>Pause - <?php echo htmlspecialchars($user_name);?></p>
         <button onclick="resumeGame()">Reanudar</button><br>
         <button onclick="quitGame()">Salir</button>
-        <button onclick="location.href='/ChickenHunter/menu/Post.html'">
+        <button onclick="location.href='../menu/Post.html'">
             <i class="fa fa-share-alt"></i>
         </button>
     </div>
