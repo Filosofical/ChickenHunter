@@ -7,7 +7,7 @@ $userName=$_SESSION['user_name'];
 }
 else{
   $userId=null;
-  $userName=null;
+ 
 }
 
 ?>
@@ -28,7 +28,7 @@ else{
   <div class="menu-container">
     <div class="menu_identity">
       <h1>Chicken Hunter</h1>
-      <h6> <?php echo (isset($_SESSION['user_id'])) ? htmlspecialchars($_SESSION['user_name'] ?? 'Usuario') : 'Inicia sesión' ?> </h6>
+      <h6> <?php echo (isset($_SESSION['user_id'])) ? htmlspecialchars($_SESSION['user_name'] ?? $userName) : 'Inicia sesión' ?> </h6>
     </div>
     
     <div id="botones">

@@ -2,13 +2,15 @@
 require'../Back/DB_conn.php';
 session_start();
 
-$userId=$_SESSION['user_id'];
-$userName=$_SESSION['user_name'];
+
 
 // Verifica si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_id'])) {
     header('Location: Sesion.php');
     exit();
+}else{
+    $userId=$_SESSION['user_id'];
+$userName=$_SESSION['user_name'];
 }
 ?>
 <!DOCTYPE html>
@@ -26,7 +28,7 @@ if (!isset($_SESSION['user_id'])) {
 <div class="contenedorPrin">
 <header>
     <button onclick="window.location.href='index.php'"><h1>Chicken Hunter</h1></button>
-    <h6> <?php echo (isset($_SESSION['user_id'])) ? htmlspecialchars($_SESSION['user_name'] ?? 'Usuario') : 'Inicia sesión' ?> </h6>
+    <h6> <?php echo (isset($_SESSION['user_id'])) ? htmlspecialchars($_SESSION['user_name']) : 'Inicia sesión'; ?> </h6>
 </header>
 <main>
 <div class="SelecChar">

@@ -63,7 +63,7 @@ $userName=$_SESSION['user_name'];
     <br>
     <div class="botones">
 <button id="jugarBtn">Jugar</button>
-    <button onclick="">Multi-Jugador</button>
+    <button id="jugarBtnMult">Multi-Jugador</button>
     <button onclick="location.href='index.php'">Volver</button>
 </div>
     </main>
