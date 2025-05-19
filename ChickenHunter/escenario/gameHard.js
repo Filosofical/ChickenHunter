@@ -430,7 +430,7 @@ const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero
             victory: mixer2.clipAction(findAnimation(animations2, "SitScratchEar")),
             defeat: mixer2.clipAction(findAnimation(animations2, "LayDown"))
         };
-        Object.values(actions2).forEach(action => {
+        Object.values(actions2).forEach(action2 => {
             action2.enabled = true;
             action2.setEffectiveTimeScale(1);
             action2.setEffectiveWeight(1);
