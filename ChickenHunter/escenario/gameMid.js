@@ -5,7 +5,9 @@ let timerInterval;
 const trapCooldown = 5000; // 3 segundos de cooldown para la trampa
 
 const Dificultad = localStorage.getItem('selectedDifficulty') || 1; // Dificultad seleccionada por el usuario
-
+const multiString = localStorage.getItem('multiplayer');
+const Multi = multiString === 'true';
+console.log('multi=',Multi);
 const idUsuario=document.getElementById('userid').value;
 let punt=0;
 // Escena
@@ -82,7 +84,9 @@ function resumeGame() {
 
 function quitGame() {
     // Aquí podrías añadir lógica para guardar la partida si es necesario
-    window.location.href = '../menu/index.php';
+    window.location.href = '../menu/index.php'; 
+    localStorage.removeItem('selectedDifficulty');
+    localStorage.removeItem('multiplayer');
 }
 
 // Estado del juego
@@ -122,7 +126,8 @@ function gameOver(message) {
     punt=punt*(gameTime/40);} //disminuir el divisor en cada dificultad
     punt=Math.trunc(punt);
     showNotification(`¡Has atrapado todas las gallinas! Tu puntaje es: ${punt}`);
-    if(idUsuario!==null){
+  if(!Multi){
+      if(idUsuario!==null){
 
         // Guardar el puntaje en la base de datos
         fetch('../Back/partida.php', {
@@ -145,7 +150,36 @@ function gameOver(message) {
         });
     }
 
+
+}else{
+    if(idUsuario!==null){
+
+        // Guardar el puntaje en la base de datos
+        fetch('../Back/multiplayer.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idUsuario: idUsuario,
+                idUsuario2: idUsuario,
+                dificultad: Dificultad,
+                puntaje: punt
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Puntaje guardado:', data);
+        })
+        .catch(error => {
+            console.error('Error al guardar el puntaje:', error);
+        });
+    }
 }
+   localStorage.removeItem('selectedDifficulty');
+    localStorage.removeItem('multiplayer');
+}
+
 
 function restartGame() {
     // Eliminar mensaje de fin de juego
@@ -163,10 +197,13 @@ function restartGame() {
     updateTimerDisplay();
 
     // Reposicionar jugador (opcional, o a una posición inicial)
-    if (player) {
-        player.position.set(0, 1, 0); // Ajusta la altura según tu modelo
+   if (player) { // Jugador 1
+        player.position.set(Multi ? -2 : 0, 0, 0); // Posición inicial J1 (ajustada si es multi)
+        // Podrías resetear la rotación aquí si es necesario
     }
-
+    if (Multi && player2) { // Jugador 2
+        player2.position.set(2, 0, 0); // Posición inicial J2
+    }
     // Reposicionar gallinas
     chickens.forEach(chicken => {
         if(chicken) chicken.position.set(Math.random() * 40 - 20, 0.5, Math.random() * 40 - 20);
@@ -219,7 +256,8 @@ function startTimer() {
 
 // Cámara
 const camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 10);
+camera.position.set(0, Multi ? 10 : 5, Multi ? 15 : 10); // Más alejada en multijugador
+
 camera.lookAt(0, 0, 0);
 
 // Renderizador
@@ -270,10 +308,20 @@ const clock = new THREE.Clock();
 // Jugador
 const loader = new THREE.GLTFLoader();
 let player;
+
+let player2;
+let mixer2;
+let actions2 = {};
+let currentAction2 = null;
+let playerModelNameP2 = 'Perro'; // Asumimos que J2 es el perro en multijugador
+let isMoving2 = false;
+let isRunning2 = false;
+let isCatching2 = false;
+if(!Multi){
 const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero';
 
  if (selectedCharacter === 'Granjero') {
-  
+    let playerModelNameP1 = 'Granjero';
  loader.load('../escenario/models/granjero.glb', (gltf) => {
      player = gltf.scene;
      player.scale.set(2, 2, 2);
@@ -292,8 +340,7 @@ const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero
          walk: mixer.clipAction(findAnimation(animations, "Walk")),
          run: mixer.clipAction(findAnimation(animations, "Run")),
          victory: mixer.clipAction(findAnimation(animations, "Victory")),
-         defeat: mixer.clipAction(findAnimation(animations, "Defeat")),
-         catch: mixer.clipAction(findAnimation(animations, "Catch"))
+         defeat: mixer.clipAction(findAnimation(animations, "Defeat"))
      };
     
      // Configurar las acciones
@@ -311,7 +358,8 @@ const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero
 
 
  } else if (selectedCharacter === 'Perro') {
-    loader.load('../escenario/models/dog.glb', (gltf) => {
+   let playerModelNameP1 = 'Perro';
+       loader.load('../escenario/models/dog.glb', (gltf) => {
         player = gltf.scene;
         player.scale.set(.2, .2, .2);
         player.position.set(0, 0, 0);
@@ -331,17 +379,64 @@ const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero
             victory: mixer.clipAction(findAnimation(animations, "SitScratchEar")),
             defeat: mixer.clipAction(findAnimation(animations, "LayDown"))
         };
-        
-        // Configurar las acciones
+     Object.values(actions).forEach(action => {
+            action.enabled = true;
+            action.setEffectiveTimeScale(1);
+            action.setEffectiveWeight(1);
+        });
+        currentAction = actions.idle;
+        if(currentAction) currentAction.play();
+        console.log('Modelo Perro y animaciones cargados');
+    }, undefined, (error) => console.error("Error al cargar el modelo Perro:", error));
+}
+}else{
+
+ let playerModelNameP1 = 'Granjero'
+ loader.load('../escenario/models/granjero.glb', (gltf) => {
+        player = gltf.scene;
+        player.scale.set(2, 2, 2);
+        player.position.set(0, 0, 0); // Asegúrate que la Y sea correcta para estar sobre el suelo
+        scene.add(player);
+        mixer = new THREE.AnimationMixer(player);
+        const animations = gltf.animations;
+        actions = {
+            idle: mixer.clipAction(findAnimation(animations, "Idle")),
+            walk: mixer.clipAction(findAnimation(animations, "Walk")),
+            run: mixer.clipAction(findAnimation(animations, "Run")),
+            victory: mixer.clipAction(findAnimation(animations, "Victory")),
+            defeat: mixer.clipAction(findAnimation(animations, "Defeat"))
+        };
         Object.values(actions).forEach(action => {
             action.enabled = true;
             action.setEffectiveTimeScale(1);
             action.setEffectiveWeight(1);
         });
-        
-        // Iniciar con animación Idle1
         currentAction = actions.idle;
         if(currentAction) currentAction.play();
+        console.log('Modelo Granjero y animaciones cargados');
+    }, undefined, (error) => console.error("Error al cargar el modelo Granjero:", error));
+
+ loader.load('../escenario/models/dog.glb', (gltf) => {
+        player2 = gltf.scene;
+        player2.scale.set(0.2, 0.2, 0.2);
+        player2.position.set(10, 0, 0); // Ajusta la Y si es necesario
+        scene.add(player2);
+        mixer2 = new THREE.AnimationMixer(player2);
+        const animations2 = gltf.animations;
+        actions2 = { // Asegúrate que los nombres de animación coincidan con tu modelo de perro
+            idle: mixer2.clipAction(findAnimation(animations2, "Idle1")), // o el nombre correcto
+            walk: mixer2.clipAction(findAnimation(animations2, "WalkCycle")),
+            run: mixer2.clipAction(findAnimation(animations2, "RunCycle")),
+            victory: mixer2.clipAction(findAnimation(animations2, "SitScratchEar")),
+            defeat: mixer2.clipAction(findAnimation(animations2, "LayDown"))
+        };
+        Object.values(actions2).forEach(action => {
+            action2.enabled = true;
+            action2.setEffectiveTimeScale(1);
+            action2.setEffectiveWeight(1);
+        });
+        currentAction2 = actions2.idle;
+        if(currentAction2) currentAction2.play();
         console.log('Modelo Perro y animaciones cargados');
     }, undefined, (error) => console.error("Error al cargar el modelo Perro:", error));
 
@@ -385,6 +480,16 @@ function transitionToAnimation(newAction, duration, loop = true) {
         currentAction.loop = THREE.LoopRepeat;
     }
 }
+function transitionToAnimationP2(newAction, duration, loop = true) {
+    if (!actions2 || Object.keys(actions2).length === 0 || !newAction) return;
+    if (currentAction2 === newAction && newAction.isRunning()) return;
+    const previousAction = currentAction2;
+    currentAction2 = newAction;
+    if (previousAction && previousAction !== currentAction2) previousAction.fadeOut(duration);
+    currentAction2.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(duration).play();
+    if (!loop) { currentAction2.clampWhenFinished = true; currentAction2.loop = THREE.LoopOnce; }
+    else { currentAction2.loop = THREE.LoopRepeat; }
+}
 // Función para actualizar la animación según el estado
 // Función para actualizar la animación según el estado
 function updateAnimationState() { // Renombrada para claridad
@@ -392,13 +497,7 @@ function updateAnimationState() { // Renombrada para claridad
 
     let newActionKey = 'idle'; // Por defecto, 'idle'
 
-    if (isCatching && actions.catch) { // Prioridad a la animación de atrapar
-        transitionToAnimation(actions.catch, 0.2, false); // No repetir la animación de atrapar
-        // Después de que termine 'catch', volver a idle/walk/run
-        mixer.addEventListener('finished', handleCatchAnimationFinished);
-        return; // Salir para no sobrescribir la acción de atrapar inmediatamente
-    }
-    
+
     if (isMoving) {
         newActionKey = isRunning ? 'run' : 'walk';
     }
@@ -407,15 +506,16 @@ function updateAnimationState() { // Renombrada para claridad
         transitionToAnimation(actions[newActionKey], 0.2);
     }
 }
-
-// Manejador para cuando la animación de atrapar termina
-function handleCatchAnimationFinished(event) {
-    if (event.action === actions.catch) {
-        isCatching = false; // Restablecer el estado
-        mixer.removeEventListener('finished', handleCatchAnimationFinished); // Limpiar el listener
-        updateAnimationState(); // Volver al estado de movimiento normal
+function updateAnimationStateP2() {
+    if (isGameOver || isPaused) return;
+    let newActionKey = 'idle';
+ 
+    if (isMoving2) newActionKey = isRunning2 ? 'run' : 'walk';
+    if (actions2[newActionKey] && currentAction2 !== actions2[newActionKey]) {
+        transitionToAnimationP2(actions2[newActionKey], 0.2);
     }
 }
+// Manejador para cuando la animación de atrapar termina
 
 
 const chickens = [];
@@ -540,41 +640,61 @@ let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 
-// Control del teclado
-document.addEventListener('keydown', (event) => {
-    if (isGameOver) return;  
+// Jugador 2 (Teclas de Flecha + Control Derecho/Shift Derecho si es posible o alguna otra tecla)
+let playerSpeed2 = 0.1; // Velocidad base P2
+let moveForward2 = false;
+let moveBackward2 = false;
+let moveLeft2 = false;
+let moveRight2 = false;
+// isRunning2 ya está definido para P2
 
-    if (event.key === 'w' || event.key === 'ArrowUp') moveForward = true;
-    if (event.key === 's' || event.key === 'ArrowDown') moveBackward = true;
-    if (event.key === 'a' || event.key === 'ArrowLeft') moveLeft = true;
-    if (event.key === 'd' || event.key === 'ArrowRight') moveRight = true;
-    if (event.key === 'Shift') {
-        isRunning = true;
-        updateAnimation();
+document.addEventListener('keydown', (event) => {
+    if (isGameOver) return;
+
+    // Controles Jugador 1 (WASD)
+    if (event.key === 'w' || event.key === 'W') moveForward = true;
+    if (event.key === 's' || event.key === 'S') moveBackward = true;
+    if (event.key === 'a' || event.key === 'A') moveLeft = true;
+    if (event.key === 'd' || event.key === 'D') moveRight = true;
+    if (event.key === 'Shift') isRunning = true; // Shift izquierdo para P1
+
+    // Controles Jugador 2 (Teclas de Flecha)
+    if (Multi) {
+        if (event.key === 'ArrowUp') moveForward2 = true;
+        if (event.key === 'ArrowDown') moveBackward2 = true;
+        if (event.key === 'ArrowLeft') moveLeft2 = true;
+        if (event.key === 'ArrowRight') moveRight2 = true;
+        if (event.key === ' ' ) isRunning2 = true; // Control Derecho o Num0 para correr P2 (ejemplo)
     }
-    if (event.key === 'Escape' || event.key === 'p') {
-        isPaused = !isPaused; 
-        if (isPaused) {
-            showPauseMenu();
-        } else {
-            hidePauseMenu(); 
-        }
+
+    // Pausa (común para ambos)
+    if (event.key === 'Escape' || event.key === 'p' || event.key === 'P') {
+        isPaused = !isPaused;
+        if (isPaused) showPauseMenu();
+        else hidePauseMenu();
     }
 });
 
 document.addEventListener('keyup', (event) => {
-      if (isGameOver) return;
+    if (isGameOver) return;
 
-    if (event.key === 'w' || event.key === 'ArrowUp') moveForward = false;
-    if (event.key === 's' || event.key === 'ArrowDown') moveBackward = false;
-    if (event.key === 'a' || event.key === 'ArrowLeft') moveLeft = false;
-    if (event.key === 'd' || event.key === 'ArrowRight') moveRight = false;
-    if (event.key === 'Shift') {
-        isRunning = false;
-        updateAnimation();
+    // Controles Jugador 1
+    if (event.key === 'w' || event.key === 'W') moveForward = false;
+    if (event.key === 's' || event.key === 'S') moveBackward = false;
+    if (event.key === 'a' || event.key === 'A') moveLeft = false;
+    if (event.key === 'd' || event.key === 'D') moveRight = false;
+    if (event.key === 'Shift') isRunning = false;
+
+    // Controles Jugador 2
+    if (Multi) {
+        if (event.key === 'ArrowUp') moveForward2 = false;
+        if (event.key === 'ArrowDown') moveBackward2 = false;
+        if (event.key === 'ArrowLeft') moveLeft2 = false;
+        if (event.key === 'ArrowRight') moveRight2 = false;
+        if (event.key === ' ' ) isRunning2 = false;
     }
 });
-
+// --- FIN CONTROLES ---
 // Contador de gallinas atrapadas
 let caughtChickens = 0;
 
@@ -588,51 +708,35 @@ startTimer();
 function animate() {
     requestAnimationFrame(animate);
     const delta = clock.getDelta();
-    const currentTime = Date.now(); // Para la IA de la gallina
+    const currentTimeForTraps = Date.now(); // Renombrado para evitar conflicto con 'currentTime' de IA gallinas
 
-    // Actualizar mezclador de animaciones del jugador
-    if (mixer) {
-        mixer.update(delta);
-    }
+    // Actualizar mixers
+    if (mixer) mixer.update(delta);
+    if (Multi && mixer2) mixer2.update(delta); // Actualizar mixer de P2
 
-    // Actualizar mezcladores de todas las trampas
-    bearTraps.forEach(trap => {
-        if (trap.mixer) {
-            trap.mixer.update(delta);
-        }
-    });
+    bearTraps.forEach(trap => { if (trap.mixer) trap.mixer.update(delta); });
 
-    if (isGameOver) { // Si el juego ha terminado, solo renderizar y salir
-        renderer.render(scene, camera);
-        return;
-    }
+    if (isGameOver) { renderer.render(scene, camera); return; }
 
     if (!isPaused) {
-        const previousPosition = player ? player.position.clone() : null;
-
-        // Actualizar estado de movimiento
-        const wasMoving = isMoving;
-        isMoving = moveForward || moveBackward || moveLeft || moveRight;
-
-        // Si el estado de movimiento cambió o la animación de atrapar no está activa, actualizar animación
-        if ((wasMoving !== isMoving || !isCatching)) {
-            updateAnimationState();
-        }
-
-        // Movimiento del jugador
+        // --- LÓGICA JUGADOR 1 ---
         if (player) {
-            const currentSpeed = (isRunning ? playerSpeed * 2 : playerSpeed);
-            if (moveForward) player.position.z -= currentSpeed;
-            if (moveBackward) player.position.z += currentSpeed;
-            if (moveLeft) player.position.x -= currentSpeed;
-            if (moveRight) player.position.x += currentSpeed;
+            const wasMovingP1 = isMoving;
+            isMoving = moveForward || moveBackward || moveLeft || moveRight;
+            if ((wasMovingP1 !== isMoving ) ) { // Solo P1 usa isCatching para animacion de catch
+                 updateAnimationState();
+            }
 
-            // Colisiones con la cerca (límites del escenario)
+            const currentSpeedP1 = (isRunning ? playerSpeed * 2 : playerSpeed);
+            if (moveForward) player.position.z -= currentSpeedP1;
+            if (moveBackward) player.position.z += currentSpeedP1;
+            if (moveLeft) player.position.x -= currentSpeedP1;
+            if (moveRight) player.position.x += currentSpeedP1;
+
             player.position.x = Math.max(fenceLimits.minX, Math.min(fenceLimits.maxX, player.position.x));
             player.position.z = Math.max(fenceLimits.minZ, Math.min(fenceLimits.maxZ, player.position.z));
 
-
-            // Rotar el modelo según la dirección (sin cambios)
+            // Rotación P1
             if (moveBackward && moveRight) player.rotation.y = Math.PI / 4;
             else if (moveBackward && moveLeft) player.rotation.y = -Math.PI / 4;
             else if (moveForward && moveRight) player.rotation.y = 3 * Math.PI / 4;
@@ -642,153 +746,165 @@ function animate() {
             else if (moveRight) player.rotation.y = Math.PI / 2;
             else if (moveLeft) player.rotation.y = -Math.PI / 2;
 
-            // Actualizar la posición de la cámara para seguir al jugador
-            camera.position.x = player.position.x;
-            camera.position.z = player.position.z + 10; // Distancia detrás del jugador
-            camera.position.y = player.position.y + 5;  // Altura de la cámara
-            camera.lookAt(player.position);
-
- bearTraps.forEach(trap => {
-                if (trap.model && player.position.distanceTo(trap.position) < 1.5) { // Ajusta el 1.5
-                    if (currentTime - trap.lastActivationTime > trapCooldown) {
+            // Colisión P1 con trampas
+            bearTraps.forEach(trap => {
+                if (trap.model && player.position.distanceTo(trap.position) < 1.5) {
+                    if (currentTimeForTraps - trap.lastActivationTime > trapCooldown) {
                         if (trap.action && !trap.action.isRunning()) {
-                            console.log(`Trampa ${trap.id || ''} activada!`);
+                            // ... (lógica de activar trampa y penalización, igual que antes) ...
+                            // Asegúrate que el gameTime y la notificación sean comunes.
                             trap.action.reset().play();
-
                             gameTime -= trapDamageTime;
                             if (gameTime < 0) gameTime = 0;
                             updateTimerDisplay();
-                            showNotification(`¡Cuidado! Te atrapó una trampa. Pierdes ${trapDamageTime} segundos.`);
-                            
-                            trap.lastActivationTime = currentTime; // Actualiza el cooldown para ESTA trampa
-
-                            if (gameTime <= 0 && !isGameOver) {
-                                gameOver("¡Te atrapó una trampa y se acabó el tiempo!");
-                                if (actions.defeat) { // Mostrar animación de derrota
-                                    transitionToAnimation(actions.defeat, 0.2, false);
-                                }
-                            }
+                            showNotification(`¡Cuidado! Jugador 1 pisó una trampa. Pierden ${trapDamageTime} seg.`);
+                            trap.lastActivationTime = currentTimeForTraps;
+                            if (gameTime <= 0 && !isGameOver) gameOver("¡Se acabó el tiempo por una trampa!");
                         }
                     }
                 }
             });
-         
         }
- chickens.forEach((chicken) => {
-            if (chicken && player) {
-                const chickenData = chicken.userData;
-                const distanceToPlayer = chicken.position.distanceTo(player.position);
-                let moveDirection = new THREE.Vector3();
-                let currentSpeed = chickenSpeed;
 
-                if (distanceToPlayer < chickenDetectionRadius) {
+        // --- LÓGICA JUGADOR 2 (Si es Multijugador) ---
+        if (Multi && player2) {
+            const wasMovingP2 = isMoving2;
+            isMoving2 = moveForward2 || moveBackward2 || moveLeft2 || moveRight2;
+            // El perro no tiene animación de 'isCatching' por ahora
+            if (wasMovingP2 !== isMoving2) {
+                updateAnimationStateP2();
+            }
+
+            const currentSpeedP2 = (isRunning2 ? playerSpeed2 * 2 : playerSpeed2);
+            if (moveForward2) player2.position.z -= currentSpeedP2;
+            if (moveBackward2) player2.position.z += currentSpeedP2;
+            if (moveLeft2) player2.position.x -= currentSpeedP2;
+            if (moveRight2) player2.position.x += currentSpeedP2;
+
+            player2.position.x = Math.max(fenceLimits.minX, Math.min(fenceLimits.maxX, player2.position.x));
+            player2.position.z = Math.max(fenceLimits.minZ, Math.min(fenceLimits.maxZ, player2.position.z));
+            
+            // Rotación P2
+            if (moveBackward2 && moveRight2) player2.rotation.y = Math.PI / 4;
+            else if (moveBackward2 && moveLeft2) player2.rotation.y = -Math.PI / 4;
+            else if (moveForward2 && moveRight2) player2.rotation.y = 3 * Math.PI / 4;
+            else if (moveForward2 && moveLeft2) player2.rotation.y = -3 * Math.PI / 4;
+            else if (moveBackward2) player2.rotation.y = 0;
+            else if (moveForward2) player2.rotation.y = Math.PI;
+            else if (moveRight2) player2.rotation.y = Math.PI / 2;
+            else if (moveLeft2) player2.rotation.y = -Math.PI / 2;
+
+            // Colisión P2 con trampas
+            bearTraps.forEach(trap => {
+                if (trap.model && player2.position.distanceTo(trap.position) < 1.5) {
+                    if (currentTimeForTraps - trap.lastActivationTime > trapCooldown) {
+                        if (trap.action && !trap.action.isRunning()) {
+                            trap.action.reset().play();
+                            gameTime -= trapDamageTime;
+                            if (gameTime < 0) gameTime = 0;
+                            updateTimerDisplay();
+                            showNotification(`¡Cuidado! Jugador 2 pisó una trampa. Pierden ${trapDamageTime} seg.`);
+                            trap.lastActivationTime = currentTimeForTraps;
+                            if (gameTime <= 0 && !isGameOver) gameOver("¡Se acabó el tiempo por una trampa!");
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- CÁMARA MULTIJUGADOR (Ejemplo simple: punto medio o más alejada) ---
+        if (Multi && player && player2) {
+            const midPoint = new THREE.Vector3().addVectors(player.position, player2.position).multiplyScalar(0.5);
+            camera.position.set(midPoint.x, camera.position.y, midPoint.z + 15); // Ajusta el '15' y 'camera.position.y'
+            camera.lookAt(midPoint);
+        } else if (player) { // Cámara un solo jugador
+            camera.position.x = player.position.x;
+            camera.position.z = player.position.z + 10;
+            camera.position.y = player.position.y + 5;
+            camera.lookAt(player.position);
+        }
+
+
+        // --- LÓGICA DE GALLINAS (IA y Captura) ---
+        const currentTimeIA = Date.now(); // Para la IA de gallinas
+        chickens.forEach((chicken) => {
+            if (chicken) {
+                const chickenData = chicken.userData;
+                let distanceToPlayer1 = Infinity;
+                let distanceToPlayer2 = Infinity;
+                let fleeFrom = null; // De qué jugador huir
+
+                if (player) distanceToPlayer1 = chicken.position.distanceTo(player.position);
+                if (Multi && player2) distanceToPlayer2 = chicken.position.distanceTo(player2.position);
+
+                // La gallina huye del jugador más cercano si está dentro del radio
+                if (distanceToPlayer1 < chickenDetectionRadius && distanceToPlayer1 <= distanceToPlayer2) {
                     chickenData.state = 'fleeing';
+                    fleeFrom = player.position;
+                } else if (Multi && player2 && distanceToPlayer2 < chickenDetectionRadius && distanceToPlayer2 < distanceToPlayer1) {
+                    chickenData.state = 'fleeing';
+                    fleeFrom = player2.position;
                 } else {
                     chickenData.state = 'wandering';
                 }
+                // ... (resto de la lógica de movimiento de gallina usando 'fleeFrom' si state es 'fleeing') ...
+                // La pegué de tu código, verifica la condición 'fleeFrom'
+                let moveDirection = new THREE.Vector3();
+                let currentChickenSpeed = chickenData.state === 'fleeing' ? chickenFleeSpeed : chickenSpeed;
 
-                if (chickenData.state === 'fleeing') {
-                    currentSpeed = chickenFleeSpeed;
-                    // Vector del jugador a la gallina, para huir en esa dirección
-                    moveDirection.subVectors(chicken.position, player.position).normalize();
-                    moveDirection.y = 0; // No queremos que vuelen o se hundan
-                } else { // 'wandering'
-                    currentSpeed = chickenSpeed;
-                    if (currentTime - chickenData.lastWanderUpdateTime > chickenData.timeToNextWander) {
-                        // Cambiar dirección de deambulación
+                if (chickenData.state === 'fleeing' && fleeFrom) {
+                    moveDirection.subVectors(chicken.position, fleeFrom).normalize();
+                } else { // wandering
+                    if (currentTimeIA - chickenData.lastWanderUpdateTime > chickenData.timeToNextWander) {
                         chickenData.wanderDirection.set((Math.random() - 0.5) * 2, 0, (Math.random() - 0.5) * 2).normalize();
                         chickenData.timeToNextWander = Math.random() * (chickenWanderTimeMax - chickenWanderTimeMin) + chickenWanderTimeMin;
-                        chickenData.lastWanderUpdateTime = currentTime;
+                        chickenData.lastWanderUpdateTime = currentTimeIA;
                     }
                     moveDirection.copy(chickenData.wanderDirection);
                 }
-
-                // Mover la gallina
-                chicken.position.x += moveDirection.x * currentSpeed * delta;
-                chicken.position.z += moveDirection.z * currentSpeed * delta;
-
-                // Rotar la gallina para que mire en la dirección de movimiento
+                chicken.position.x += moveDirection.x * currentChickenSpeed * delta;
+                chicken.position.z += moveDirection.z * currentChickenSpeed * delta;
                 pointChickenInDirection(chicken, moveDirection);
-
-                // Mantener gallinas dentro de los límites
                 chicken.position.x = Math.max(fenceLimits.minX + 1, Math.min(fenceLimits.maxX - 1, chicken.position.x));
                 chicken.position.z = Math.max(fenceLimits.minZ + 1, Math.min(fenceLimits.maxZ - 1, chicken.position.z));
 
-                // Detección de colisión con el jugador para atraparla (sin cambios en esta parte)
-                if (!isCatching && chicken.position.distanceTo(player.position) < 1.5) {
-                     if (actions.catch && selectedCharacter === 'Perro') {
-                        isCatching = true;
-                        updateAnimationState();
-                    } else {
-                        handleChickenCaught(chicken); 
-                    }
+
+                // Detección de colisión para atrapar (ambos jugadores)
+                if (player && !isCatching && chicken.position.distanceTo(player.position) < 1.5) {
+                     // Perro (P1 en single player) o Granjero sin animación de catch configurada
+                        handleChickenCaught(chicken, player); // Pasar el jugador que atrapó
+                    
+                } else if (Multi && player2 && /*!isCatching2 (si P2 tuviera animacion de catch) &&*/ chicken.position.distanceTo(player2.position) < 1.5) {
+                    // El perro (P2) atrapa instantáneamente
+                    handleChickenCaught(chicken, player2); // Pasar el jugador que atrapó
                 }
             }
         });
-        
 
-        // Lógica de atrapar gallina (separada para ser llamada por animación o directamente)
-        function handleChickenCaught(chicken) {
-            chicken.position.set(Math.random() * (fenceLimits.maxX - fenceLimits.minX) + fenceLimits.minX, 0.5, Math.random() * (fenceLimits.maxZ - fenceLimits.minZ) + fenceLimits.minZ);
-            caughtChickens++;
+        // Lógica de atrapar gallina
+        function handleChickenCaught(chicken, captor) { // 'captor' es el jugador que la atrapó
+            chicken.position.set(
+                Math.random() * (fenceLimits.maxX - fenceLimits.minX) + fenceLimits.minX,
+                0.5,
+                Math.random() * (fenceLimits.maxZ - fenceLimits.minZ) + fenceLimits.minZ
+            );
+            caughtChickens++; // Contador común
             counterElement.textContent = `Gallinas atrapadas: ${caughtChickens}`;
-        
-            if (!isCatching && selectedCharacter === 'Perro' && actions.catch) {
-                // Si no se estaba ya en la animación de atrapar (porque fue un catch instantáneo para el perro por ejemplo)
-                // y el granjero tiene animación de catch, se podría forzar un pequeño gesto o sonido.
-                // Pero como la lógica de `isCatching` ya maneja la animación, esta parte podría ser redundante
-                // o necesitar un ajuste si quieres un feedback visual/auditivo incluso sin la animación completa.
-                 if (actions.catch) { // Mostrar animación de victoria
-                    transitionToAnimation(actions.catch, 0.2, false);
-                }
-            }
-        
-            // Lógica de victoria
-            if (caughtChickens >= targetCatchCount && !isGameOver) {
-                gameOver("¡Has atrapado todas las gallinas!");
-                if (actions.victory) { // Mostrar animación de victoria
-                    transitionToAnimation(actions.victory, 0.2, false);
-                }
-            }
-        }
 
-        // Si isCatching es true y la animación es la de atrapar y el personaje es Granjero
-        if (isCatching && currentAction === actions.catch && selectedCharacter === 'Perro') {
-            // Hacemos la lógica de "atrapar" (mover gallina, contar) cuando la animación está a punto de terminar
-            // o en un punto clave. Para simplificar, podrías atarlo al evento 'finished'
-            // o si la animación "Catch" ya implica visualmente el atrape, puedes hacer la lógica
-            // justo antes de que termine.
-            // Por ahora, la lógica de atrapar la gallina (moverla y contarla) la he puesto en
-            // un listener 'finished' para la animación de "catch".
-            // Buscamos la gallina más cercana para aplicar el efecto de "atrape"
-            // Esta es una forma simple, podrías querer tener una referencia a la gallina específica
-            // que disparó la colisión.
-            if (!mixer.listeners_['finished']) { // Asegurarse de no añadir múltiples listeners
-                 mixer.addEventListener('finished', (e) => {
-                    if (e.action === actions.catch) {
-                        // Encuentra la gallina más cercana que disparó la colisión
-                        // Esto es una simplificación; idealmente, tendrías la gallina específica.
-                        let caughtChickenInstance = null;
-                        for(let ch of chickens){
-                            if(player && ch.position.distanceTo(player.position) < 2.0){ // un poco más de rango para asegurar
-                                caughtChickenInstance = ch;
-                                break;
-                            }
-                        }
-                        if(caughtChickenInstance){
-                            handleChickenCaught(caughtChickenInstance);
-                        }
-                        isCatching = false; // Importante resetear
-                        // mixer.removeEventListener('finished', this); // No se puede usar 'this' así directamente
-                        updateAnimationState(); // Volver a idle/walk/run
-                    }
-                });
+            // Lógica de victoria común
+            if (caughtChickens >= targetCatchCount && !isGameOver) {
+                gameOver("¡Han atrapado todas las gallinas!");
+                // Podrías reproducir animación de victoria para AMBOS jugadores si están definidos
+                if (actions.victory && player === captor) transitionToAnimation(actions.victory, 0.2, false);
+                if (Multi && actions2.victory && player2 === captor) transitionToAnimationP2(actions2.victory, 0.2, false);
             }
         }
+        
+  
+       
 
 
     } // Fin de if(!isPaused)
-
     renderer.render(scene, camera);
 }
 

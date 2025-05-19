@@ -303,7 +303,7 @@ const selectedCharacter = localStorage.getItem('selectedCharacter') || 'Granjero
 
 // Lógica de carga del jugador (sin cambios, solo la refiero)
 if (selectedCharacter === 'Granjero') {
-   let playerModelNameP1 = 'Granjero'
+   let playerModelNameP1 = 'Granjero';
     loader.load('../escenario/models/granjero.glb', (gltf) => {
         player = gltf.scene;
         player.scale.set(2, 2, 2);
@@ -328,7 +328,7 @@ if (selectedCharacter === 'Granjero') {
         console.log('Modelo Granjero y animaciones cargados');
     }, undefined, (error) => console.error("Error al cargar el modelo Granjero:", error));
 } else if (selectedCharacter === 'Perro') {
-     let playerModelNameP1 = 'Perro'
+     let playerModelNameP1 = 'Perro';
     loader.load('../escenario/models/dog.glb', (gltf) => {
         player = gltf.scene;
         player.scale.set(0.2, 0.2, 0.2);
@@ -470,7 +470,7 @@ function updateAnimationState() { // Renombrada para claridad
     }
 }
 function updateAnimationStateP2() {
-    if (isGameOver || isPaused || !actions2.idle) return;
+    if (isGameOver || isPaused ) return;
     let newActionKey = 'idle';
  
     if (isMoving2) newActionKey = isRunning2 ? 'run' : 'walk';
@@ -627,7 +627,7 @@ document.addEventListener('keydown', (event) => {
         if (event.key === 'ArrowDown') moveBackward2 = true;
         if (event.key === 'ArrowLeft') moveLeft2 = true;
         if (event.key === 'ArrowRight') moveRight2 = true;
-        if (event.key === 'Control' || event.code === 'Numpad0') isRunning2 = true; // Control Derecho o Num0 para correr P2 (ejemplo)
+        if (event.key === ' ') isRunning2 = true; // Control Derecho o Num0 para correr P2 (ejemplo)
     }
 
     // Pausa (común para ambos)
@@ -654,7 +654,7 @@ document.addEventListener('keyup', (event) => {
         if (event.key === 'ArrowDown') moveBackward2 = false;
         if (event.key === 'ArrowLeft') moveLeft2 = false;
         if (event.key === 'ArrowRight') moveRight2 = false;
-        if (event.key === 'Control' || event.code === 'Numpad0') isRunning2 = false;
+        if (event.key === ' ' ) isRunning2 = false;
     }
 });
 // --- FIN CONTROLES ---
