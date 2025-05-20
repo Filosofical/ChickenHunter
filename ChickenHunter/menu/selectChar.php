@@ -23,6 +23,7 @@ $userName=$_SESSION['user_name'];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style2.css">
+    <link rel="Icon" href="../media/logo.jpg">
 </head>
 <body>
 <div class="contenedorPrin">

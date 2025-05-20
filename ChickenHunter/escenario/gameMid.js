@@ -620,6 +620,44 @@ loader.load('../escenario/models/cercaMed.glb', (gltf) => {
     console.error("Error al cargar el modelo de cerca:", error);
 });
 
+let PowerSpeed= 1.3;
+let rayo;
+let PowerTime= 20;
+ let reloj;
+loader.load('../escenario/models/rayo.glb', (gltf) => {
+    // NO uses const rayo = gltf.scene; USA:
+    rayo = gltf.scene; // Asigna a la variable global 'rayo'
+    if (rayo) { // Siempre verifica si la carga fue exitosa
+        rayo.scale.set(3.0, 3.0, 3.0);
+        const margin = 15; // Un pequeño margen para que no aparezcan pegadas a la cerca. Ajusta si es necesario.
+        const randomX = Math.random() * (fenceLimits.maxX - margin - (fenceLimits.minX + margin)) + (fenceLimits.minX + margin);
+        const randomZ = Math.random() * (fenceLimits.maxZ - margin - (fenceLimits.minZ + margin)) + (fenceLimits.minZ + margin);
+        const rayoPosition = new THREE.Vector3(randomX, 0, randomZ); // Altura 1 puede estar bien
+        rayo.position.copy(rayoPosition);
+        scene.add(rayo); // ¡IMPORTANTE! Añadir el modelo a la escena
+        console.log('Modelo de rayo cargado');
+    } else {
+        console.error("Error: gltf.scene para rayo es undefined");
+    }
+}, undefined, (error) => console.error("Error al cargar el modelo de rayo:", error));
+
+loader.load('../escenario/models/clock.glb', (gltf) => {
+    // NO uses const reloj = gltf.scene; USA:
+    reloj = gltf.scene; // Asigna a la variable global 'reloj'
+    if (reloj) {
+        reloj.scale.set(0.2, 0.2, 0.2);
+        const margin = 15; // Un pequeño margen para que no aparezcan pegadas a la cerca. Ajusta si es necesario.
+        const randomX = Math.random() * (fenceLimits.maxX - margin - (fenceLimits.minX + margin)) + (fenceLimits.minX + margin);
+        const randomZ = Math.random() * (fenceLimits.maxZ - margin - (fenceLimits.minZ + margin)) + (fenceLimits.minZ + margin);
+        const relojPosition = new THREE.Vector3(randomX, 1, randomZ); // Altura 1
+        reloj.position.copy(relojPosition);
+        scene.add(reloj); // ¡IMPORTANTE! Añadir el modelo a la escena
+        console.log('Modelo de reloj cargado');
+    } else {
+        console.error("Error: gltf.scene para reloj es undefined");
+    }
+}, undefined, (error) => console.error("Error al cargar el modelo de reloj:", error));
+
 // Trees
 let trees;
 
@@ -703,6 +741,66 @@ let caughtChickens = 0;
 updateTimerDisplay();
 startTimer();
 
+let particleSystems = []; 
+
+
+
+// --- FUNCIÓN PARA CREAR UN SISTEMA DE PARTÍCULAS DE HUMO ---
+function createSmokeParticles(particleCount = 50, position = new THREE.Vector3(0, 0, 0)) {
+    const particlesGeometry = new THREE.BufferGeometry();
+    const vertices = [];
+    const velocities = []; // Para almacenar la velocidad de cada partícula
+    const lifespans = [];  // Para almacenar el tiempo de vida de cada partícula
+
+    const textureLoaderParticles = new THREE.TextureLoader();
+    const smokeTexture = textureLoaderParticles.load('smoke.png'); // Asegúrate que esta ruta sea correcta
+
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.5, // Tamaño inicial de las partículas, puedes ajustarlo
+        map: smokeTexture,
+        blending: THREE.NormalBlending, // Prueba también AdditiveBlending
+        transparent: true,
+        depthWrite: false, // Importante para la transparencia correcta a menudo
+        opacity: 0.7, // Opacidad inicial
+         color: 0x888888 // Puedes teñir el humo si quieres (ej. gris)
+    });
+
+    for (let i = 0; i < particleCount; i++) {
+        // Posición inicial alrededor del punto de origen
+        const x = position.x + (Math.random() - 0.5) * 0.5; // Pequeña dispersión inicial
+        const y = position.y + (Math.random() - 0.5) * 0.2;
+        const z = position.z + (Math.random() - 0.5) * 0.5;
+        vertices.push(x, y, z);
+
+        // Velocidad inicial (principalmente hacia arriba y dispersándose)
+        velocities.push(
+            (Math.random() - 0.5) * 0.01, // Velocidad X
+            Math.random() * 0.01 + 0.01,   // Velocidad Y (hacia arriba)
+            (Math.random() - 0.5) * 0.01  // Velocidad Z
+        );
+
+        // Tiempo de vida (en segundos)
+        lifespans.push(Math.random() * 1.5 + 0.5); // Entre 0.5 y 2 segundos
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    
+    const smokeSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+    smokeSystem.userData = {
+        velocities: velocities,
+        lifespans: lifespans,
+        initialLifespans: [...lifespans], // Copia para resetear
+        initialPositions: [...vertices],  // Copia para resetear
+        particleCount: particleCount,
+        origin: position.clone(),
+        age: 0, // Edad del sistema de partículas, para desvanecerlo globalmente si es un "puf"
+        maxAge: 2.0 // Cuánto tiempo dura el efecto de "puf" de humo
+    };
+
+    scene.add(smokeSystem);
+    particleSystems.push(smokeSystem); // Añadir a nuestra lista para actualizar
+    return smokeSystem;
+}
 
 // Animación
 function animate() {
@@ -746,6 +844,39 @@ function animate() {
             else if (moveRight) player.rotation.y = Math.PI / 2;
             else if (moveLeft) player.rotation.y = -Math.PI / 2;
 
+            if (rayo && rayo.visible && player.position.distanceTo(rayo.position) < 2.0) { // Verifica que rayo exista y sea visible
+        playerSpeed = playerSpeed * PowerSpeed;
+        rayo.visible = false; // Oculta el rayo
+        showNotification("¡Velocidad aumentada!", 2000);
+        // Podrías querer removerlo de la escena y del array de power-ups si tienes uno
+        // O programar que reaparezca después de un tiempo.
+    }
+
+    // Colisión con reloj
+    if (reloj && reloj.visible && player.position.distanceTo(reloj.position) < 1.5) { // Verifica que reloj exista y sea visible
+        gameTime += PowerTime;
+         if (gameTime > 120) gameTime = 120; // Opcional: Limitar el tiempo máximo
+        updateTimerDisplay();
+        reloj.visible = false; // Oculta el reloj
+        showNotification(`+${PowerTime} segundos!`, 2000);
+    }
+
+    // Lógica similar para player2 si es multijugador
+    if (Multi && player2) {
+        if (rayo && rayo.visible && player2.position.distanceTo(rayo.position) < 2.0) {
+            playerSpeed2 = playerSpeed2 * PowerSpeed; // Asumiendo PowerSpeed afecta a ambos o tienes playerSpeed2PowerSpeed
+            rayo.visible = false;
+            showNotification("¡Jugador 2 obtuvo velocidad aumentada!", 2000);
+        }
+        if (reloj && reloj.visible && player2.position.distanceTo(reloj.position) < 1.5) {
+            gameTime += PowerTime;
+             if (gameTime > 120) gameTime = 120;
+            updateTimerDisplay();
+            reloj.visible = false;
+            showNotification(`¡Jugador 2 obtuvo +${PowerTime} segundos!`, 2000);
+        }
+    }
+
             // Colisión P1 con trampas
             bearTraps.forEach(trap => {
                 if (trap.model && player.position.distanceTo(trap.position) < 1.5) {
@@ -757,6 +888,7 @@ function animate() {
                             gameTime -= trapDamageTime;
                             if (gameTime < 0) gameTime = 0;
                             updateTimerDisplay();
+                            createSmokeParticles(50, trap.position.clone().add(new THREE.Vector3(0, 0.5, 0)));
                             showNotification(`¡Cuidado! Jugador 1 pisó una trampa. Pierden ${trapDamageTime} seg.`);
                             trap.lastActivationTime = currentTimeForTraps;
                             if (gameTime <= 0 && !isGameOver) gameOver("¡Se acabó el tiempo por una trampa!");
@@ -803,6 +935,7 @@ function animate() {
                             gameTime -= trapDamageTime;
                             if (gameTime < 0) gameTime = 0;
                             updateTimerDisplay();
+                            createSmokeParticles(50, trap.position.clone().add(new THREE.Vector3(0, 0.5, 0)));
                             showNotification(`¡Cuidado! Jugador 2 pisó una trampa. Pierden ${trapDamageTime} seg.`);
                             trap.lastActivationTime = currentTimeForTraps;
                             if (gameTime <= 0 && !isGameOver) gameOver("¡Se acabó el tiempo por una trampa!");
@@ -899,10 +1032,56 @@ function animate() {
                 if (Multi && actions2.victory && player2 === captor) transitionToAnimationP2(actions2.victory, 0.2, false);
             }
         }
-        
-  
-       
 
+        for (let i = particleSystems.length - 1; i >= 0; i--) {
+        const system = particleSystems[i];
+        const positions = system.geometry.attributes.position.array;
+        const velocities = system.userData.velocities;
+        const lifespans = system.userData.lifespans;
+        const particleCount = system.userData.particleCount;
+        let allParticlesDead = true;
+
+        system.userData.age += delta; // Envejecer el sistema de "puf"
+
+        for (let j = 0; j < particleCount; j++) {
+            lifespans[j] -= delta; // Reducir tiempo de vida
+
+            if (lifespans[j] > 0) {
+                allParticlesDead = false;
+                // Actualizar posición
+                positions[j * 3] += velocities[j * 3] * (1 + system.userData.age); // Dispersión aumenta con la edad del sistema
+                positions[j * 3 + 1] += velocities[j * 3 + 1]; // Movimiento Y (ascendente)
+                positions[j * 3 + 2] += velocities[j * 3 + 2] * (1 + system.userData.age);
+
+                // Simular algo de "fricción" o desaceleración (opcional)
+                // velocities[j * 3 + 1] *= 0.98; // Desaceleración en Y
+
+            } else {
+                // Partícula "muerta", podrías resetearla aquí para un flujo continuo,
+                // o simplemente dejarla así si es un efecto de una sola vez por sistema.
+                // Para un "puf" que desaparece, no la reseteamos individualmente.
+            }
+        }
+
+        system.geometry.attributes.position.needsUpdate = true;
+
+        // Hacer que todo el sistema de "puf" se desvanezca
+        if (system.userData.age < system.userData.maxAge) {
+            system.material.opacity = Math.max(0, 0.7 * (1 - (system.userData.age / system.userData.maxAge)));
+        } else {
+            system.material.opacity = 0; // Asegurar que desaparezca
+        }
+        
+
+        // Si todas las partículas están muertas o el sistema es muy viejo, eliminarlo
+        if (system.material.opacity <= 0 && system.userData.age >= system.userData.maxAge) {
+            scene.remove(system);
+            system.geometry.dispose();
+            system.material.dispose();
+            particleSystems.splice(i, 1); // Eliminar del array
+            console.log("Sistema de humo eliminado");
+        }
+    }
 
     } // Fin de if(!isPaused)
     renderer.render(scene, camera);

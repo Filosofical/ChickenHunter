@@ -612,15 +612,15 @@ let PowerSpeed= 1.3;
 let rayo;
 let PowerTime= 20;
  let reloj;
-loader.load('../escenario/models/lightning.glb', (gltf) => {
+loader.load('../escenario/models/rayo.glb', (gltf) => {
     // NO uses const rayo = gltf.scene; USA:
     rayo = gltf.scene; // Asigna a la variable global 'rayo'
     if (rayo) { // Siempre verifica si la carga fue exitosa
-        rayo.scale.set(4.0, 4.0, 4.0);
+        rayo.scale.set(3.0, 3.0, 3.0);
         const margin = 15; // Un pequeño margen para que no aparezcan pegadas a la cerca. Ajusta si es necesario.
         const randomX = Math.random() * (fenceLimits.maxX - margin - (fenceLimits.minX + margin)) + (fenceLimits.minX + margin);
         const randomZ = Math.random() * (fenceLimits.maxZ - margin - (fenceLimits.minZ + margin)) + (fenceLimits.minZ + margin);
-        const rayoPosition = new THREE.Vector3(randomX, 3, randomZ); // Altura 1 puede estar bien
+        const rayoPosition = new THREE.Vector3(randomX, 0, randomZ); // Altura 1 puede estar bien
         rayo.position.copy(rayoPosition);
         scene.add(rayo); // ¡IMPORTANTE! Añadir el modelo a la escena
         console.log('Modelo de rayo cargado');
@@ -633,7 +633,7 @@ loader.load('../escenario/models/clock.glb', (gltf) => {
     // NO uses const reloj = gltf.scene; USA:
     reloj = gltf.scene; // Asigna a la variable global 'reloj'
     if (reloj) {
-        reloj.scale.set(0.3, 0.3, 0.3);
+        reloj.scale.set(0.2, 0.2, 0.2);
         const margin = 15; // Un pequeño margen para que no aparezcan pegadas a la cerca. Ajusta si es necesario.
         const randomX = Math.random() * (fenceLimits.maxX - margin - (fenceLimits.minX + margin)) + (fenceLimits.minX + margin);
         const randomZ = Math.random() * (fenceLimits.maxZ - margin - (fenceLimits.minZ + margin)) + (fenceLimits.minZ + margin);
@@ -833,7 +833,7 @@ function animate() {
             else if (moveRight) player.rotation.y = Math.PI / 2;
             else if (moveLeft) player.rotation.y = -Math.PI / 2;
 
-           if (rayo && rayo.visible && player.position.distanceTo(rayo.position) < 1.5) { // Verifica que rayo exista y sea visible
+           if (rayo && rayo.visible && player.position.distanceTo(rayo.position) < 2.0) { // Verifica que rayo exista y sea visible
         playerSpeed = playerSpeed * PowerSpeed;
         rayo.visible = false; // Oculta el rayo
         showNotification("¡Velocidad aumentada!", 2000);
@@ -852,7 +852,7 @@ function animate() {
 
     // Lógica similar para player2 si es multijugador
     if (Multi && player2) {
-        if (rayo && rayo.visible && player2.position.distanceTo(rayo.position) < 1.5) {
+        if (rayo && rayo.visible && player2.position.distanceTo(rayo.position) < 2.0) {
             playerSpeed2 = playerSpeed2 * PowerSpeed; // Asumiendo PowerSpeed afecta a ambos o tienes playerSpeed2PowerSpeed
             rayo.visible = false;
             showNotification("¡Jugador 2 obtuvo velocidad aumentada!", 2000);

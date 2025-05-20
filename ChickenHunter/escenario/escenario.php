@@ -17,7 +17,7 @@ $user_name= isset($_SESSION['user_name']) ? $_SESSION['user_name'] : null;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  
+  <link rel="Icon" href="../media/logo.jpg">
 </head>
 <body>
     <div id="counter">Gallinas atrapadas: 0</div>
